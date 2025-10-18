@@ -644,180 +644,146 @@
     </audio>
 
     <script>
-        // Products data - In real implementation, this would be loaded from products.json
-        const products = [
-            { id: 1, name: "Produk Premium A", price: 150000 },
-            { id: 2, name: "Produk Exclusive B", price: 250000 },
-            { id: 3, name: "Produk Special C", price: 350000 },
-            { id: 4, name: "Produk Limited D", price: 450000 }
-        ];
+    // === VARIABEL GLOBAL ===
+    let products = [];
+    let selectedProduct = null;
+    let selectedPaymentMethod = null;
+    let currentTransaction = null;
 
-        let selectedProduct = null;
-        let selectedPaymentMethod = null;
-        let currentTransaction = null;
+    // === INISIALISASI ===
+    document.addEventListener('DOMContentLoaded', () => {
+        loadProductsFromJSON(); // Load produk dari JSON
+    });
 
-        // Initialize
-        document.addEventListener('DOMContentLoaded', function() {
-            loadProducts();
-            loadProductsFromJSON();
+    // === NAVIGASI ===
+    function showSection(sectionId) {
+        document.querySelectorAll('.section').forEach(sec => sec.classList.remove('active'));
+        document.getElementById(sectionId).classList.add('active');
+
+        document.querySelectorAll('.nav-link').forEach(link => link.classList.remove('active'));
+        if (event && event.target) event.target.classList.add('active');
+    }
+
+    // === LOAD PRODUK DARI JSON ===
+    async function loadProductsFromJSON() {
+        try {
+            const res = await fetch('products.json');
+            if (!res.ok) throw new Error(`HTTP ${res.status}`);
+            products = await res.json();
+            console.log('✅ Produk berhasil dimuat:', products);
+        } catch (err) {
+            console.warn('❌ Gagal load products.json:', err);
+            products = [
+                { id: 1, name: 'Paket Hemat', price: 25000 },
+                { id: 2, name: 'Paket Premium', price: 50000 }
+            ];
+        }
+        loadProducts(); // Tampilkan ke grid
+    }
+
+    // === TAMPILKAN PRODUK ===
+    function loadProducts() {
+        const grid = document.getElementById('productsGrid');
+        grid.innerHTML = '';
+
+        if (!products.length) {
+            grid.innerHTML = '<p style="text-align:center;color:#FFD700;">Tidak ada produk tersedia</p>';
+            return;
+        }
+
+        products.forEach(p => {
+            const card = document.createElement('div');
+            card.className = 'product-card';
+            card.innerHTML = `
+                <h3 class="product-name">${p.name}</h3>
+                ${p.description ? `<p style="color:#ccc;margin-bottom:1rem;">${p.description}</p>` : ''}
+                <p class="product-price">Rp ${p.price.toLocaleString('id-ID')}</p>
+                <button class="select-btn" onclick="selectProduct(${p.id})">
+                    <i class="fas fa-shopping-cart"></i> Pilih
+                </button>
+            `;
+            grid.appendChild(card);
         });
+    }
 
-        // Navigation
-        function showSection(sectionId) {
-            // Hide all sections
-            document.querySelectorAll('.section').forEach(section => {
-                section.classList.remove('active');
-            });
-            
-            // Show selected section
-            document.getElementById(sectionId).classList.add('active');
-            
-            // Update nav links
-            document.querySelectorAll('.nav-link').forEach(link => {
-                link.classList.remove('active');
-            });
-            event.target.classList.add('active');
+    // === PILIH PRODUK ===
+    function selectProduct(id) {
+        selectedProduct = products.find(p => p.id === id);
+        if (!selectedProduct) return;
+
+        document.getElementById('productName').value = selectedProduct.name;
+        document.getElementById('productPrice').value = `Rp ${selectedProduct.price.toLocaleString('id-ID')}`;
+        showSection('payment');
+    }
+
+    // === PILIH METODE PEMBAYARAN ===
+    function selectPayment(method) {
+        selectedPaymentMethod = method;
+        document.querySelectorAll('.payment-method').forEach(el => el.classList.remove('selected'));
+        event.currentTarget.classList.add('selected');
+
+        const qrisPreview = document.getElementById('qrisPreview');
+        qrisPreview.style.display = method === 'qris' ? 'block' : 'none';
+    }
+
+    // === HANDLE SUBMIT PEMBAYARAN ===
+    document.getElementById('paymentForm').addEventListener('submit', e => {
+        e.preventDefault();
+        if (!selectedPaymentMethod) return alert('Pilih metode pembayaran!');
+
+        currentTransaction = {
+            id: 'TRX' + Date.now().toString().slice(-8),
+            buyerName: document.getElementById('buyerName').value.trim(),
+            wa: document.getElementById('buyerWA').value.trim(),
+            telegram: document.getElementById('buyerTelegram').value.trim(),
+            product: selectedProduct.name,
+            price: selectedProduct.price,
+            paymentMethod: selectedPaymentMethod,
+            date: new Date().toLocaleDateString('id-ID'),
+            time: new Date().toLocaleTimeString('id-ID')
+        };
+
+        showPendingPage();
+    });
+
+    // === TAMPILKAN HALAMAN PENDING ===
+    function showPendingPage() {
+        document.getElementById('pendingBuyerName').textContent = currentTransaction.buyerName;
+        document.getElementById('pendingDate').textContent = currentTransaction.date;
+        document.getElementById('transactionId').textContent = currentTransaction.id;
+        document.getElementById('pendingPayment').textContent = currentTransaction.paymentMethod.toUpperCase();
+        document.getElementById('paymentDetails').textContent = currentTransaction.paymentMethod === 'dana'
+            ? '081234567890 (DANA)'
+            : 'QRIS Code';
+        showSection('pending');
+    }
+
+    // === UPLOAD BUKTI ===
+    function handleFileUpload(input) {
+        if (input.files && input.files[0]) {
+            const reader = new FileReader();
+            reader.onload = e => currentTransaction.proofImage = e.target.result;
+            reader.readAsDataURL(input.files[0]);
         }
+    }
 
-        // Load products
-        function loadProducts() {
-            const grid = document.getElementById('productsGrid');
-            grid.innerHTML = '';
-            
-            products.forEach(product => {
-                const card = document.createElement('div');
-                card.className = 'product-card';
-                card.innerHTML = `
-                    <h3 class="product-name">${product.name}</h3>
-                    <p class="product-price">Rp ${product.price.toLocaleString()}</p>
-                    <button class="select-btn" onclick="selectProduct(${product.id})">
-                        <i class="fas fa-shopping-cart"></i> Pilih
-                    </button>
-                `;
-                grid.appendChild(card);
-            });
-        }
+    // === KONFIRMASI PEMBAYARAN ===
+    function confirmPayment() {
+        if (!currentTransaction.proofImage) return alert('Upload bukti transfer!');
+        sendToTelegram();
+        showReceipt();
+    }
 
-        // Load products from JSON (simulated)
-        function loadProductsFromJSON() {
-            // In real implementation, you would fetch from products.json
-            // fetch('products.json')
-            //     .then(response => response.json())
-            //     .then(data => {
-            //         products = data;
-            //         loadProducts();
-            //     });
-        }
-
-        // Select product
-        function selectProduct(productId) {
-            selectedProduct = products.find(p => p.id === productId);
-            if (selectedProduct) {
-                document.getElementById('productName').value = selectedProduct.name;
-                document.getElementById('productPrice').value = `Rp ${selectedProduct.price.toLocaleString()}`;
-                showSection('payment');
-            }
-        }
-
-        // Select payment method
-        function selectPayment(method) {
-            selectedPaymentMethod = method;
-            document.querySelectorAll('.payment-method').forEach(el => {
-                el.classList.remove('selected');
-            });
-            event.target.closest('.payment-method').classList.add('selected');
-            
-            // Show QRIS preview if selected
-            const qrisPreview = document.getElementById('qrisPreview');
-            if (method === 'qris') {
-                qrisPreview.style.display = 'block';
-            } else {
-                qrisPreview.style.display = 'none';
-            }
-        }
-
-        // Handle payment form submission
-        document.getElementById('paymentForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            
-            if (!selectedPaymentMethod) {
-                alert('Silakan pilih metode pembayaran!');
-                return;
-            }
-            
-            const buyerName = document.getElementById('buyerWA').value;
-            const buyerWA = document.getElementById('buyerWA').value;
-            const buyerTelegram = document.getElementById('buyerTelegram').value;
-            
-            // Generate transaction data
-            currentTransaction = {
-                id: 'TRX' + Date.now().toString().slice(-8),
-                buyerName: buyerName,
-                wa: buyerWA,
-                telegram: buyerTelegram,
-                product: selectedProduct.name,
-                price: selectedProduct.price,
-                paymentMethod: selectedPaymentMethod,
-                date: new Date().toLocaleDateString('id-ID'),
-                time: new Date().toLocaleTimeString('id-ID')
-            };
-            
-            // Show pending page
-            showPendingPage();
-        });
-
-        // Show pending page
-        function showPendingPage() {
-            document.getElementById('pendingBuyerName').textContent = currentTransaction.buyerName;
-            document.getElementById('pendingDate').textContent = currentTransaction.date;
-            document.getElementById('transactionId').textContent = currentTransaction.id;
-            document.getElementById('pendingPayment').textContent = currentTransaction.paymentMethod.toUpperCase();
-            
-            // Set payment details
-            const paymentDetails = currentTransaction.paymentMethod === 'dana' 
-                ? '081234567890 (DANA)' 
-                : 'QRIS Code';
-            document.getElementById('paymentDetails').textContent = paymentDetails;
-            
-            showSection('pending');
-        }
-
-        // Handle file upload
-        function handleFileUpload(input) {
-            if (input.files && input.files[0]) {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    // Store the proof image
-                    currentTransaction.proofImage = e.target.result;
-                };
-                reader.readAsDataURL(input.files[0]);
-            }
-        }
-
-        // Confirm payment
-        function confirmPayment() {
-            if (!currentTransaction.proofImage) {
-                alert('Silakan upload bukti transfer terlebih dahulu!');
-                return;
-            }
-            
-            // Send to Telegram (simulated)
-            sendToTelegram();
-            
-            // Show receipt
-            showReceipt();
-        }
-
-        // Send to Telegram (simulated)
-        function sendToTelegram() {
-            const message = `
-🦆 *PESANAN BARU - Warunk Dox Ducks* 🦆
+    // === KIRIM KE TELEGRAM ===
+    function sendToTelegram() {
+        const msg = `
+🦆 *PESANAN BARU - Warunk Dox Ducks*
 
 📋 *Detail Transaksi:*
 • ID: ${currentTransaction.id}
 • Nama: ${currentTransaction.buyerName}
 • Produk: ${currentTransaction.product}
-• Harga: Rp ${currentTransaction.price.toLocaleString()}
+• Harga: Rp ${currentTransaction.price.toLocaleString('id-ID')}
 • Metode: ${currentTransaction.paymentMethod.toUpperCase()}
 • Tanggal: ${currentTransaction.date} ${currentTransaction.time}
 
@@ -826,74 +792,39 @@
 • Telegram: ${currentTransaction.telegram}
 
 ✅ Status: Pembayaran Diterima
-            `;
-            
-            // In real implementation, you would send this to Telegram Bot API
-            // fetch(`https://api.telegram.org/botYOUR_BOT_TOKEN/sendMessage`, {
-            //     method: 'POST',
-            //     headers: { 'Content-Type': 'application/json' },
-            //     body: JSON.stringify({
-            //         chat_id: 'YOUR_CHAT_ID',
-            //         text: message,
-            //         parse_mode: 'Markdown'
-            //     })
-            // });
-            
-            console.log('Pesan Telegram:', message);
-            alert('Pembayaran berhasil dikonfirmasi! Detail telah dikirim ke Telegram.');
-        }
+        `;
+        console.log('📤 Pesan Telegram:', msg);
+        // fetch(`https://api.telegram.org/botYOUR_TOKEN/sendMessage`, {
+        //     method: 'POST',
+        //     headers: { 'Content-Type': 'application/json' },
+        //     body: JSON.stringify({ chat_id: 'YOUR_CHAT_ID', text: msg, parse_mode: 'Markdown' })
+        // });
+    }
 
-        // Show receipt
-        function showReceipt() {
-            document.getElementById('receiptTransactionId').textContent = currentTransaction.id;
-            document.getElementById('receiptBuyerName').textContent = currentTransaction.buyerName;
-            document.getElementById('receiptProduct').textContent = currentTransaction.product;
-            document.getElementById('receiptTotal').textContent = `Rp ${currentTransaction.price.toLocaleString()}`;
-            document.getElementById('receiptDate').textContent = `${currentTransaction.date} ${currentTransaction.time}`;
-            
-            showSection('receipt');
-        }
+    // === TAMPILKAN STRUK ===
+    function showReceipt() {
+        document.getElementById('receiptTransactionId').textContent = currentTransaction.id;
+        document.getElementById('receiptBuyerName').textContent = currentTransaction.buyerName;
+        document.getElementById('receiptProduct').textContent = currentTransaction.product;
+        document.getElementById('receiptTotal').textContent = `Rp ${currentTransaction.price.toLocaleString('id-ID')}`;
+        document.getElementById('receiptDate').textContent = `${currentTransaction.date} ${currentTransaction.time}`;
+        showSection('receipt');
+    }
 
-        // Music control
-        let musicPlaying = false;
-        function toggleMusic() {
-            const audio = document.getElementById('bgMusic');
-            const icon = document.getElementById('musicIcon');
-            
-            if (musicPlaying) {
-                audio.pause();
-                icon.className = 'fas fa-music';
-            } else {
-                audio.play().catch(e => console.log('Audio play failed:', e));
-                icon.className = 'fas fa-pause';
-            }
-            musicPlaying = !musicPlaying;
+    // === MUSIK BACKGROUND ===
+    let musicPlaying = false;
+    function toggleMusic() {
+        const audio = document.getElementById('bgMusic');
+        const icon = document.getElementById('musicIcon');
+        if (musicPlaying) {
+            audio.pause();
+            icon.className = 'fas fa-music';
+        } else {
+            audio.play().catch(() => {});
+            icon.className = 'fas fa-pause';
         }
-
-        // Add some interactive effects
-        document.addEventListener('mousemove', function(e) {
-            const cursor = document.querySelector('.cursor');
-            if (!cursor) {
-                const newCursor = document.createElement('div');
-                newCursor.className = 'cursor';
-                newCursor.style.cssText = `
-                    position: fixed;
-                    width: 20px;
-                    height: 20px;
-                    background: #FFD700;
-                    border-radius: 50%;
-                    pointer-events: none;
-                    z-index: 9999;
-                    opacity: 0.5;
-                    transition: all 0.1s ease;
-                `;
-                document.body.appendChild(newCursor);
-            }
-            
-            const cursor_element = document.querySelector('.cursor');
-            cursor_element.style.left = e.clientX - 10 + 'px';
-            cursor_element.style.top = e.clientY - 10 + 'px';
-        });
-    </script>
+        musicPlaying = !musicPlaying;
+    }
+</script>
 </body>
 </html>
