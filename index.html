@@ -1,0 +1,899 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Warunk Dox Ducks - Store</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #1a1a1a 0%, #0d0d0d 100%), url('background.png');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            color: #fff;
+            min-height: 100vh;
+            position: relative;
+        }
+
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.7);
+            z-index: 1;
+        }
+
+        .container {
+            position: relative;
+            z-index: 2;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Navigation */
+        nav {
+            background: rgba(0,0,0,0.8);
+            padding: 1rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            backdrop-filter: blur(10px);
+            border-bottom: 3px solid #FFD700;
+        }
+
+        .nav-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: #FFD700;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+        }
+
+        .nav-links {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+        }
+
+        .nav-links a {
+            color: #fff;
+            text-decoration: none;
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+
+        .nav-links a:hover, .nav-links a.active {
+            background: #FFD700;
+            color: #000;
+            transform: translateY(-2px);
+        }
+
+        /* Sections */
+        .section {
+            display: none;
+            padding: 3rem 0;
+            min-height: 80vh;
+        }
+
+        .section.active {
+            display: block;
+            animation: fadeIn 0.5s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Dashboard */
+        .dashboard {
+            text-align: center;
+            padding: 4rem 0;
+        }
+
+        .logo-store {
+            width: 200px;
+            height: 200px;
+            margin: 2rem auto;
+            border-radius: 50%;
+            border: 5px solid #FFD700;
+            object-fit: cover;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        .welcome-text {
+            font-size: 3rem;
+            color: #FFD700;
+            margin-bottom: 1rem;
+            text-shadow: 3px 3px 6px rgba(0,0,0,0.7);
+        }
+
+        .subtitle {
+            font-size: 1.2rem;
+            color: #ccc;
+            margin-bottom: 2rem;
+        }
+
+        /* Products */
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .product-card {
+            background: rgba(0,0,0,0.8);
+            border: 2px solid #FFD700;
+            border-radius: 15px;
+            padding: 1.5rem;
+            text-align: center;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .product-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 10px 30px rgba(255,215,0,0.3);
+        }
+
+        .product-name {
+            font-size: 1.5rem;
+            color: #FFD700;
+            margin-bottom: 0.5rem;
+        }
+
+        .product-price {
+            font-size: 2rem;
+            color: #fff;
+            font-weight: bold;
+            margin-bottom: 1rem;
+        }
+
+        .select-btn {
+            background: #FFD700;
+            color: #000;
+            border: none;
+            padding: 0.8rem 2rem;
+            border-radius: 25px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .select-btn:hover {
+            background: #FFA500;
+            transform: scale(1.05);
+        }
+
+        /* Payment Form */
+        .payment-form {
+            background: rgba(0,0,0,0.9);
+            border: 2px solid #FFD700;
+            border-radius: 15px;
+            padding: 2rem;
+            max-width: 600px;
+            margin: 2rem auto;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            color: #FFD700;
+            margin-bottom: 0.5rem;
+            font-weight: bold;
+        }
+
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 1rem;
+            border: 2px solid #FFD700;
+            border-radius: 8px;
+            background: rgba(255,255,255,0.1);
+            color: #fff;
+            font-size: 1rem;
+        }
+
+        .form-group input:focus, .form-group select:focus {
+            outline: none;
+            border-color: #FFA500;
+            box-shadow: 0 0 10px rgba(255,215,0,0.3);
+        }
+
+        .payment-methods {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .payment-method {
+            border: 2px solid #FFD700;
+            border-radius: 10px;
+            padding: 1rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .payment-method:hover, .payment-method.selected {
+            background: rgba(255,215,0,0.2);
+            border-color: #FFA500;
+        }
+
+        .qris-preview {
+            max-width: 200px;
+            margin: 1rem auto;
+            display: none;
+        }
+
+        .qris-preview img {
+            width: 100%;
+            border-radius: 10px;
+        }
+
+        .submit-btn {
+            width: 100%;
+            background: #FFD700;
+            color: #000;
+            border: none;
+            padding: 1.2rem;
+            border-radius: 10px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .submit-btn:hover {
+            background: #FFA500;
+            transform: scale(1.02);
+        }
+
+        /* Pending Page */
+        .pending-info {
+            background: rgba(0,0,0,0.9);
+            border: 2px solid #FFD700;
+            border-radius: 15px;
+            padding: 2rem;
+            max-width: 600px;
+            margin: 2rem auto;
+            text-align: center;
+        }
+
+        .transaction-details {
+            text-align: left;
+            margin: 2rem 0;
+        }
+
+        .detail-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 1rem;
+            padding: 0.5rem;
+            border-bottom: 1px solid rgba(255,215,0,0.3);
+        }
+
+        .detail-label {
+            color: #FFD700;
+            font-weight: bold;
+        }
+
+        .upload-area {
+            border: 2px dashed #FFD700;
+            border-radius: 10px;
+            padding: 2rem;
+            text-align: center;
+            margin: 1.5rem 0;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .upload-area:hover {
+            background: rgba(255,215,0,0.1);
+        }
+
+        .upload-area input[type="file"] {
+            display: none;
+        }
+
+        /* Receipt */
+        .receipt {
+            background: rgba(0,0,0,0.9);
+            border: 2px solid #FFD700;
+            border-radius: 15px;
+            padding: 2rem;
+            max-width: 600px;
+            margin: 2rem auto;
+            text-align: center;
+        }
+
+        .receipt-header {
+            color: #FFD700;
+            font-size: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .receipt-details {
+            text-align: left;
+            margin: 2rem 0;
+        }
+
+        .status-badge {
+            display: inline-block;
+            background: #4CAF50;
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            margin: 1rem 0;
+        }
+
+        /* Contact */
+        .contact-info {
+            background: rgba(0,0,0,0.8);
+            border: 2px solid #FFD700;
+            border-radius: 15px;
+            padding: 2rem;
+            max-width: 600px;
+            margin: 2rem auto;
+            text-align: center;
+        }
+
+        .contact-item {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 1rem 0;
+            font-size: 1.2rem;
+        }
+
+        .contact-item i {
+            color: #FFD700;
+            margin-right: 1rem;
+            font-size: 1.5rem;
+        }
+
+        /* Music Control */
+        .music-control {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: rgba(0,0,0,0.8);
+            border: 2px solid #FFD700;
+            border-radius: 50%;
+            width: 60px;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            z-index: 1000;
+            transition: all 0.3s ease;
+        }
+
+        .music-control:hover {
+            background: #FFD700;
+            color: #000;
+        }
+
+        .music-control i {
+            font-size: 1.5rem;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .nav-links {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .welcome-text {
+                font-size: 2rem;
+            }
+
+            .products-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .payment-methods {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="overlay"></div>
+    
+    <!-- Navigation -->
+    <nav>
+        <div class="nav-container">
+            <div class="logo">Warunk Dox Ducks</div>
+            <ul class="nav-links">
+                <li><a href="#" onclick="showSection('dashboard')" class="nav-link active">Dashboard</a></li>
+                <li><a href="#" onclick="showSection('products')" class="nav-link">Produk</a></li>
+                <li><a href="#" onclick="showSection('contact')" class="nav-link">Kontak</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="container">
+        <!-- Dashboard Section -->
+        <section id="dashboard" class="section active">
+            <div class="dashboard">
+                <img src="logo.png" alt="Warunk Dox Ducks" class="logo-store">
+                <h1 class="welcome-text">Selamat Datang di Warunk Dox Ducks!</h1>
+                <p class="subtitle">Toko online terpercaya dengan produk berkualitas dan harga terbaik</p>
+                <p>Kami menyediakan berbagai produk pilihan dengan kualitas terjamin. 
+                   Nikmati pengalaman berbelanja yang mudah dan aman bersama kami.</p>
+            </div>
+        </section>
+
+        <!-- Products Section -->
+        <section id="products" class="section">
+            <h2 style="text-align: center; color: #FFD700; margin-bottom: 2rem; font-size: 2.5rem;">
+                <i class="fas fa-shopping-bag"></i> Produk Kami
+            </h2>
+            <div class="products-grid" id="productsGrid">
+                <!-- Products will be loaded here -->
+            </div>
+        </section>
+
+        <!-- Payment Section -->
+        <section id="payment" class="section">
+            <h2 style="text-align: center; color: #FFD700; margin-bottom: 2rem; font-size: 2.5rem;">
+                <i class="fas fa-credit-card"></i> Pembayaran
+            </h2>
+            <div class="payment-form">
+                <form id="paymentForm">
+                    <div class="form-group">
+                        <label>Nama Produk</label>
+                        <input type="text" id="productName" readonly>
+                    </div>
+                    <div class="form-group">
+                        <label>Harga</label>
+                        <input type="text" id="productPrice" readonly>
+                    </div>
+                    <div class="form-group">
+                        <label>Nama Pembeli</label>
+                        <input type="text" id="buyerName" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Kontak WhatsApp</label>
+                        <input type="tel" id="buyerWA" placeholder="08xxxxxxxxxx" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Kontak Telegram (Opsional)</label>
+                        <input type="text" id="buyerTelegram" placeholder="@username">
+                    </div>
+                    <div class="form-group">
+                        <label>Metode Pembayaran</label>
+                        <div class="payment-methods">
+                            <div class="payment-method" onclick="selectPayment('dana')">
+                                <i class="fas fa-wallet"></i>
+                                <h3>DANA</h3>
+                            </div>
+                            <div class="payment-method" onclick="selectPayment('qris')">
+                                <i class="fas fa-qrcode"></i>
+                                <h3>QRIS</h3>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="qris-preview" id="qrisPreview">
+                        <img src="qris.png" alt="QRIS Code">
+                    </div>
+                    <button type="submit" class="submit-btn">
+                        <i class="fas fa-check"></i> Bayar Sekarang
+                    </button>
+                </form>
+            </div>
+        </section>
+
+        <!-- Pending Section -->
+        <section id="pending" class="section">
+            <h2 style="text-align: center; color: #FFD700; margin-bottom: 2rem; font-size: 2.5rem;">
+                <i class="fas fa-clock"></i> Menunggu Pembayaran
+            </h2>
+            <div class="pending-info">
+                <div class="transaction-details">
+                    <div class="detail-row">
+                        <span class="detail-label">Nama Pembeli:</span>
+                        <span id="pendingBuyerName"></span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Tanggal:</span>
+                        <span id="pendingDate"></span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">ID Transaksi:</span>
+                        <span id="transactionId"></span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Pembayaran:</span>
+                        <span id="pendingPayment"></span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">No Rekening/QRIS:</span>
+                        <span id="paymentDetails"></span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Atas Nama:</span>
+                        <span>Warunk Dox Ducks</span>
+                    </div>
+                </div>
+                
+                <div class="upload-area" onclick="document.getElementById('proofUpload').click()">
+                    <i class="fas fa-cloud-upload-alt" style="font-size: 3rem; color: #FFD700; margin-bottom: 1rem;"></i>
+                    <p>Klik untuk upload bukti transfer</p>
+                    <input type="file" id="proofUpload" accept="image/*" onchange="handleFileUpload(this)">
+                </div>
+                
+                <button class="submit-btn" onclick="confirmPayment()">
+                    <i class="fas fa-check-circle"></i> Sudah Dibayar
+                </button>
+            </div>
+        </section>
+
+        <!-- Receipt Section -->
+        <section id="receipt" class="section">
+            <div class="receipt">
+                <h2 class="receipt-header">
+                    <i class="fas fa-receipt"></i> Struk Pembelian
+                </h2>
+                <div class="status-badge">
+                    <i class="fas fa-check-circle"></i> Pembayaran Berhasil
+                </div>
+                <div class="receipt-details">
+                    <div class="detail-row">
+                        <span class="detail-label">ID Transaksi:</span>
+                        <span id="receiptTransactionId"></span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Nama Pembeli:</span>
+                        <span id="receiptBuyerName"></span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Produk:</span>
+                        <span id="receiptProduct"></span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Total Bayar:</span>
+                        <span id="receiptTotal"></span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Tanggal:</span>
+                        <span id="receiptDate"></span>
+                    </div>
+                </div>
+                <p style="margin-top: 2rem; color: #ccc;">
+                    Terima kasih telah berbelanja di Warunk Dox Ducks!
+                </p>
+                <button class="submit-btn" onclick="showSection('dashboard')">
+                    <i class="fas fa-home"></i> Kembali ke Dashboard
+                </button>
+            </div>
+        </section>
+
+        <!-- Contact Section -->
+        <section id="contact" class="section">
+            <h2 style="text-align: center; color: #FFD700; margin-bottom: 2rem; font-size: 2.5rem;">
+                <i class="fas fa-address-book"></i> Kontak Kami
+            </h2>
+            <div class="contact-info">
+                <h3 style="color: #FFD700; margin-bottom: 2rem;">Hubungi Kami</h3>
+                <div class="contact-item">
+                    <i class="fab fa-whatsapp"></i>
+                    <span>WhatsApp: 08xxxxxxxxxx</span>
+                </div>
+                <div class="contact-item">
+                    <i class="fab fa-telegram"></i>
+                    <span>Telegram: @warunkdoxducks</span>
+                </div>
+                <div class="contact-item">
+                    <i class="fas fa-envelope"></i>
+                    <span>Email: warunk@doxducks.com</span>
+                </div>
+                <div class="contact-item">
+                    <i class="fas fa-map-marker-alt"></i>
+                    <span>Alamat: Jl. Contoh No. 123, Kota Anda</span>
+                </div>
+                <p style="margin-top: 2rem; color: #ccc;">
+                    Kami siap membantu Anda! Hubungi kami kapan saja.
+                </p>
+            </div>
+        </section>
+    </div>
+
+    <!-- Music Control -->
+    <div class="music-control" onclick="toggleMusic()">
+        <i class="fas fa-music" id="musicIcon"></i>
+    </div>
+
+    <!-- Background Music -->
+    <audio id="bgMusic" loop>
+        <source src="music.mp3" type="audio/mpeg">
+    </audio>
+
+    <script>
+        // Products data - In real implementation, this would be loaded from products.json
+        const products = [
+            { id: 1, name: "Produk Premium A", price: 150000 },
+            { id: 2, name: "Produk Exclusive B", price: 250000 },
+            { id: 3, name: "Produk Special C", price: 350000 },
+            { id: 4, name: "Produk Limited D", price: 450000 }
+        ];
+
+        let selectedProduct = null;
+        let selectedPaymentMethod = null;
+        let currentTransaction = null;
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            loadProducts();
+            loadProductsFromJSON();
+        });
+
+        // Navigation
+        function showSection(sectionId) {
+            // Hide all sections
+            document.querySelectorAll('.section').forEach(section => {
+                section.classList.remove('active');
+            });
+            
+            // Show selected section
+            document.getElementById(sectionId).classList.add('active');
+            
+            // Update nav links
+            document.querySelectorAll('.nav-link').forEach(link => {
+                link.classList.remove('active');
+            });
+            event.target.classList.add('active');
+        }
+
+        // Load products
+        function loadProducts() {
+            const grid = document.getElementById('productsGrid');
+            grid.innerHTML = '';
+            
+            products.forEach(product => {
+                const card = document.createElement('div');
+                card.className = 'product-card';
+                card.innerHTML = `
+                    <h3 class="product-name">${product.name}</h3>
+                    <p class="product-price">Rp ${product.price.toLocaleString()}</p>
+                    <button class="select-btn" onclick="selectProduct(${product.id})">
+                        <i class="fas fa-shopping-cart"></i> Pilih
+                    </button>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        // Load products from JSON (simulated)
+        function loadProductsFromJSON() {
+            // In real implementation, you would fetch from products.json
+            // fetch('products.json')
+            //     .then(response => response.json())
+            //     .then(data => {
+            //         products = data;
+            //         loadProducts();
+            //     });
+        }
+
+        // Select product
+        function selectProduct(productId) {
+            selectedProduct = products.find(p => p.id === productId);
+            if (selectedProduct) {
+                document.getElementById('productName').value = selectedProduct.name;
+                document.getElementById('productPrice').value = `Rp ${selectedProduct.price.toLocaleString()}`;
+                showSection('payment');
+            }
+        }
+
+        // Select payment method
+        function selectPayment(method) {
+            selectedPaymentMethod = method;
+            document.querySelectorAll('.payment-method').forEach(el => {
+                el.classList.remove('selected');
+            });
+            event.target.closest('.payment-method').classList.add('selected');
+            
+            // Show QRIS preview if selected
+            const qrisPreview = document.getElementById('qrisPreview');
+            if (method === 'qris') {
+                qrisPreview.style.display = 'block';
+            } else {
+                qrisPreview.style.display = 'none';
+            }
+        }
+
+        // Handle payment form submission
+        document.getElementById('paymentForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            if (!selectedPaymentMethod) {
+                alert('Silakan pilih metode pembayaran!');
+                return;
+            }
+            
+            const buyerName = document.getElementById('buyerWA').value;
+            const buyerWA = document.getElementById('buyerWA').value;
+            const buyerTelegram = document.getElementById('buyerTelegram').value;
+            
+            // Generate transaction data
+            currentTransaction = {
+                id: 'TRX' + Date.now().toString().slice(-8),
+                buyerName: buyerName,
+                wa: buyerWA,
+                telegram: buyerTelegram,
+                product: selectedProduct.name,
+                price: selectedProduct.price,
+                paymentMethod: selectedPaymentMethod,
+                date: new Date().toLocaleDateString('id-ID'),
+                time: new Date().toLocaleTimeString('id-ID')
+            };
+            
+            // Show pending page
+            showPendingPage();
+        });
+
+        // Show pending page
+        function showPendingPage() {
+            document.getElementById('pendingBuyerName').textContent = currentTransaction.buyerName;
+            document.getElementById('pendingDate').textContent = currentTransaction.date;
+            document.getElementById('transactionId').textContent = currentTransaction.id;
+            document.getElementById('pendingPayment').textContent = currentTransaction.paymentMethod.toUpperCase();
+            
+            // Set payment details
+            const paymentDetails = currentTransaction.paymentMethod === 'dana' 
+                ? '081234567890 (DANA)' 
+                : 'QRIS Code';
+            document.getElementById('paymentDetails').textContent = paymentDetails;
+            
+            showSection('pending');
+        }
+
+        // Handle file upload
+        function handleFileUpload(input) {
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    // Store the proof image
+                    currentTransaction.proofImage = e.target.result;
+                };
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+
+        // Confirm payment
+        function confirmPayment() {
+            if (!currentTransaction.proofImage) {
+                alert('Silakan upload bukti transfer terlebih dahulu!');
+                return;
+            }
+            
+            // Send to Telegram (simulated)
+            sendToTelegram();
+            
+            // Show receipt
+            showReceipt();
+        }
+
+        // Send to Telegram (simulated)
+        function sendToTelegram() {
+            const message = `
+🦆 *PESANAN BARU - Warunk Dox Ducks* 🦆
+
+📋 *Detail Transaksi:*
+• ID: ${currentTransaction.id}
+• Nama: ${currentTransaction.buyerName}
+• Produk: ${currentTransaction.product}
+• Harga: Rp ${currentTransaction.price.toLocaleString()}
+• Metode: ${currentTransaction.paymentMethod.toUpperCase()}
+• Tanggal: ${currentTransaction.date} ${currentTransaction.time}
+
+📞 *Kontak:*
+• WA: ${currentTransaction.wa}
+• Telegram: ${currentTransaction.telegram}
+
+✅ Status: Pembayaran Diterima
+            `;
+            
+            // In real implementation, you would send this to Telegram Bot API
+            // fetch(`https://api.telegram.org/botYOUR_BOT_TOKEN/sendMessage`, {
+            //     method: 'POST',
+            //     headers: { 'Content-Type': 'application/json' },
+            //     body: JSON.stringify({
+            //         chat_id: 'YOUR_CHAT_ID',
+            //         text: message,
+            //         parse_mode: 'Markdown'
+            //     })
+            // });
+            
+            console.log('Pesan Telegram:', message);
+            alert('Pembayaran berhasil dikonfirmasi! Detail telah dikirim ke Telegram.');
+        }
+
+        // Show receipt
+        function showReceipt() {
+            document.getElementById('receiptTransactionId').textContent = currentTransaction.id;
+            document.getElementById('receiptBuyerName').textContent = currentTransaction.buyerName;
+            document.getElementById('receiptProduct').textContent = currentTransaction.product;
+            document.getElementById('receiptTotal').textContent = `Rp ${currentTransaction.price.toLocaleString()}`;
+            document.getElementById('receiptDate').textContent = `${currentTransaction.date} ${currentTransaction.time}`;
+            
+            showSection('receipt');
+        }
+
+        // Music control
+        let musicPlaying = false;
+        function toggleMusic() {
+            const audio = document.getElementById('bgMusic');
+            const icon = document.getElementById('musicIcon');
+            
+            if (musicPlaying) {
+                audio.pause();
+                icon.className = 'fas fa-music';
+            } else {
+                audio.play().catch(e => console.log('Audio play failed:', e));
+                icon.className = 'fas fa-pause';
+            }
+            musicPlaying = !musicPlaying;
+        }
+
+        // Add some interactive effects
+        document.addEventListener('mousemove', function(e) {
+            const cursor = document.querySelector('.cursor');
+            if (!cursor) {
+                const newCursor = document.createElement('div');
+                newCursor.className = 'cursor';
+                newCursor.style.cssText = `
+                    position: fixed;
+                    width: 20px;
+                    height: 20px;
+                    background: #FFD700;
+                    border-radius: 50%;
+                    pointer-events: none;
+                    z-index: 9999;
+                    opacity: 0.5;
+                    transition: all 0.1s ease;
+                `;
+                document.body.appendChild(newCursor);
+            }
+            
+            const cursor_element = document.querySelector('.cursor');
+            cursor_element.style.left = e.clientX - 10 + 'px';
+            cursor_element.style.top = e.clientY - 10 + 'px';
+        });
+    </script>
+</body>
+</html>

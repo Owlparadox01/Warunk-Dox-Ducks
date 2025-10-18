@@ -1,0 +1,58 @@
+[
+  {
+    "id": 1,
+    "name": "Paket Hemat A",
+    "price": 25000,
+    "description": "Paket hemat spesial untuk pelanggan setia",
+    "category": "Paket"
+  },
+  {
+    "id": 2,
+    "name": "Paket Premium B",
+    "price": 50000,
+    "description": "Paket premium dengan kualitas terbaik",
+    "category": "Paket"
+  },
+  {
+    "id": 3,
+    "name": "Paket Exclusive C",
+    "price": 75000,
+    "description": "Paket exclusive dengan bonus spesial",
+    "category": "Paket"
+  },
+  {
+    "id": 4,
+    "name": "Paket Ultimate D",
+    "price": 100000,
+    "description": "Paket ultimate dengan layanan prioritas",
+    "category": "Paket"
+  },
+  {
+    "id": 5,
+    "name": "Produk Spesial E",
+    "price": 150000,
+    "description": "Produk spesial dengan kualitas premium",
+    "category": "Produk"
+  },
+  {
+    "id": 6,
+    "name": "Produk Limited F",
+    "price": 200000,
+    "description": "Produk limited edition yang langka",
+    "category": "Produk"
+  },
+  {
+    "id": 7,
+    "name": "Digital Product G",
+    "price": 30000,
+    "description": "Produk digital dengan akses instan",
+    "category": "Digital"
+  },
+  {
+    "id": 8,
+    "name": "Membership Gold",
+    "price": 150000,
+    "description": "Membership gold dengan benefit eksklusif",
+    "category": "Membership"
+  }
+]
