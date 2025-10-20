@@ -861,7 +861,7 @@ const CHAT_ID = "1011991187";
 
 // === KIRIM KE TELEGRAM ===
 function sendToTelegram() {
-    const msg = `
+    const captionMsg = `
 🦆 *PESANAN BARU - Warunk Dox Ducks*
 
 📋 *Detail Transaksi:*
@@ -877,17 +877,38 @@ function sendToTelegram() {
 • Telegram: ${currentTransaction.telegram}
 
 ✅ Status: Pembayaran Diterima
-    `;
+`;
 
-    fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-            chat_id: CHAT_ID,
-            text: msg,
-            parse_mode: 'Markdown'
-        })
-    });
+    if (!currentTransaction.proofImage) {
+        alert("Silakan upload bukti transfer dulu!");
+        return;
+    }
+
+    function dataURLtoBlob(dataURL) {
+        const arr = dataURL.split(',');
+        const mime = arr[0].match(/:(.*?);/)[1];
+        const bstr = atob(arr[1]);
+        let n = bstr.length;
+        const u8arr = new Uint8Array(n);
+        while (n--) u8arr[n] = bstr.charCodeAt(n);
+        return new Blob([u8arr], { type: mime });
+    }
+
+    const photoBlob = dataURLtoBlob(currentTransaction.proofImage);
+
+    const formData = new FormData();
+    formData.append("chat_id", CHAT_ID);
+    formData.append("caption", captionMsg);
+    formData.append("parse_mode", "Markdown");
+    formData.append("photo", photoBlob, "bukti.jpg");
+
+    fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendPhoto`, {
+        method: "POST",
+        body: formData
+    })
+    .then(res => res.json())
+    .then(data => console.log("✅ Bukti Terkirim!", data))
+    .catch(err => console.error("❌ Error:", err));
 }
 
     // === TAMPILKAN STRUK ===
