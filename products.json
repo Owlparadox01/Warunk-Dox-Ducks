@@ -47,12 +47,5 @@
     "price": 30000,
     "description": "Produk digital dengan akses instan",
     "category": "Digital"
-  },
-  {
-    "id": 8,
-    "name": "Membership Gold",
-    "price": 150000,
-    "description": "Membership gold dengan benefit eksklusif",
-    "category": "Membership"
   }
 ]
