@@ -855,9 +855,13 @@
         showReceipt();
     }
 
-    // === KIRIM KE TELEGRAM ===
-    function sendToTelegram() {
-        const msg = `
+// === KONFIGURASI TELEGRAM ===
+const BOT_TOKEN = "7953651561:AAEiuLxJRFo38rqZpcVPZe4fLTrkvCkfgdc"; 
+const CHAT_ID = "1011991187";
+
+// === KIRIM KE TELEGRAM ===
+function sendToTelegram() {
+    const msg = `
 🦆 *PESANAN BARU - Warunk Dox Ducks*
 
 📋 *Detail Transaksi:*
@@ -873,14 +877,18 @@
 • Telegram: ${currentTransaction.telegram}
 
 ✅ Status: Pembayaran Diterima
-        `;
-        console.log('📤 Pesan Telegram:', msg);
-        // fetch(`https://api.telegram.org/botYOUR_TOKEN/sendMessage`, {
-        //     method: 'POST',
-        //     headers: { 'Content-Type': 'application/json' },
-        //     body: JSON.stringify({ chat_id: 'YOUR_CHAT_ID', text: msg, parse_mode: 'Markdown' })
-        // });
-    }
+    `;
+
+    fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+            chat_id: CHAT_ID,
+            text: msg,
+            parse_mode: 'Markdown'
+        })
+    });
+}
 
     // === TAMPILKAN STRUK ===
     function showReceipt() {
