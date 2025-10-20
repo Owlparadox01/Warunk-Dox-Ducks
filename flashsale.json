@@ -28,15 +28,5 @@
     "startTime": "2025-11-01T00:00:00",
     "endTime": null,
     "image": "coming1.png"
-  },
-  {
-    "id": 4,
-    "name": "Sepatu Sneakers",
-    "price": 250000,
-    "description": "Flash sale berakhir kemarin",
-    "status": "expired",
-    "startTime": "2025-01-01T00:00:00",
-    "endTime": "2025-01-10T23:59:59",
-    "image": "expired1.png"
   }
 ]
