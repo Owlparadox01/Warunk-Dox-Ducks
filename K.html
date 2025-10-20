@@ -1,0 +1,687 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Warunk Dox Ducks — Flash Sale</title>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet"/>
+<style>
+  :root{
+    --bg1: #0f1724;
+    --bg2: #081226;
+    --card: rgba(255,255,255,0.03);
+    --glass: rgba(255,255,255,0.04);
+    --accent: #FFD166;
+    --accent-2:#FF9F1C;
+    --muted:#9aa3b2;
+    --success:#4cd964;
+    --danger:#ff6b6b;
+    font-family: 'Roboto', 'Helvetica', Arial, sans-serif;
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0;
+    min-height:100vh;
+    background: radial-gradient( circle at 10% 10%, rgba(255,209,102,0.06) 0%, transparent 10%),
+                linear-gradient(180deg,var(--bg1) 0%, var(--bg2) 100%);
+    color:#E6EEF6;
+    -webkit-font-smoothing:antialiased;
+    -moz-osx-font-smoothing:grayscale;
+  }
+
+  /* NAVBAR */
+  .navbar{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:1rem;
+    padding:1rem 1.25rem;
+    backdrop-filter: blur(6px);
+    background: linear-gradient(90deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+    border-bottom: 1px solid rgba(255,255,255,0.03);
+    position:sticky;
+    top:0;
+    z-index:100;
+  }
+  .nav-left{ display:flex; align-items:center; gap:.7rem; }
+  .back-btn{
+    display:inline-flex;
+    align-items:center;
+    gap:.5rem;
+    padding:.45rem .6rem;
+    border-radius:8px;
+    color:var(--accent);
+    background: rgba(255,209,102,0.04);
+    cursor:pointer;
+    font-weight:700;
+  }
+  .nav-right{ text-align:right; }
+  .nav-title{
+    font-weight:800;
+    color:var(--accent);
+    letter-spacing:.6px;
+    font-size:1.05rem;
+  }
+  .nav-sub{ color:var(--muted); font-size:.85rem; }
+
+  main{ max-width:1100px; margin:1.1rem auto; padding:0 1rem 3rem; }
+
+  h1{ text-align:center; color:var(--accent); margin:0.6rem 0 1rem; font-size:1.35rem; }
+
+  /* LAYOUT */
+  .layout {
+    display:grid;
+    grid-template-columns: 1fr;
+    gap:1rem;
+  }
+
+  /* FLASH GRID */
+  .flash-grid{
+    display:grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap:1rem;
+    margin-top:.5rem;
+  }
+  .card{
+    background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+    border-radius:12px;
+    padding:1rem;
+    border: 1px solid rgba(255,255,255,0.03);
+    box-shadow: 0 10px 30px rgba(2,6,23,0.6);
+    transition: transform .18s ease, box-shadow .18s ease;
+    overflow:hidden;
+  }
+  .card:hover{ transform: translateY(-6px); box-shadow: 0 18px 50px rgba(2,6,23,0.7); }
+  .card img{ width:100%; height:160px; object-fit:cover; border-radius:8px; margin-bottom:.7rem; display:block; }
+  .card .name{ color:var(--accent); font-weight:800; font-size:1.03rem; margin-bottom:.25rem; }
+  .card .price{ font-weight:800; font-size:1.12rem; margin-bottom:.45rem; color:#fff; }
+  .card .desc{ color:var(--muted); font-size:.95rem; margin-bottom:.6rem; min-height:38px; }
+  .timer{ color:var(--accent); font-weight:800; margin-bottom:.55rem; font-size:.95rem; }
+  .btn {
+    display:inline-flex; gap:.6rem; align-items:center;
+    padding:.55rem .9rem; border-radius:999px; border:none; cursor:pointer;
+    background: linear-gradient(90deg,var(--accent),var(--accent-2));
+    color:#000; font-weight:800; box-shadow: 0 6px 18px rgba(255,160,40,0.12);
+  }
+  .btn.secondary{
+    background:transparent; color:var(--muted); border:1px solid rgba(255,255,255,0.04);
+    box-shadow:none; font-weight:700;
+  }
+  .coming { opacity:.9; }
+  .coming .btn { background:transparent; border:2px dashed rgba(255,255,255,0.04); color:var(--muted); pointer-events:none; }
+
+  /* SECTIONS (SPA) */
+  section{ display:none; }
+  section.active{ display:block; animation:fadeIn .28s ease both; }
+  @keyframes fadeIn{ from{ opacity:0; transform: translateY(6px)} to{opacity:1; transform:none;} }
+
+  /* FORM */
+  .card form .field{ margin-bottom:.6rem; display:flex; flex-direction:column; gap:.25rem; }
+  input[type="text"], input[type="tel"], select, textarea, input[type="file"]{
+    padding:.6rem .7rem; border-radius:10px; border:1px solid rgba(255,255,255,0.04);
+    background: rgba(0,0,0,0.25); color:#fff; outline:none;
+  }
+  label.small{ font-size:.86rem; color:var(--muted); }
+
+  /* payment box */
+  .muted{ color:var(--muted); }
+  .payment-box{ padding:.9rem; border-radius:10px; background: linear-gradient(180deg, rgba(255,255,255,0.01), rgba(255,255,255,0.005)); border:1px solid rgba(255,255,255,0.02); margin-top:.6rem; }
+  .qrimg{ max-width:240px; border-radius:8px; background:#fff; padding:6px; display:block; margin:0 auto; }
+
+  .flex{ display:flex; gap:.6rem; align-items:center; flex-wrap:wrap; }
+  .right{ margin-left:auto; }
+
+  /* invoice */
+  .invoice { padding:1rem; border-radius:10px; background: linear-gradient(180deg, rgba(255,255,255,0.01), rgba(255,255,255,0.005)); border:1px solid rgba(255,255,255,0.02); }
+  .invoice .big { font-size:1.15rem; font-weight:800; color:var(--accent); }
+
+  /* small screens tweaks */
+  @media (max-width:620px){
+    .card img{ height:140px; }
+    .nav-title{ font-size:0.98rem; }
+  }
+
+  footer{ margin-top:1rem; text-align:center; color:var(--muted); font-size:.9rem; padding-bottom:2rem;}
+</style>
+</head>
+<body>
+
+  <!-- NAVBAR -->
+  <div class="navbar">
+    <div class="nav-left">
+      <div class="back-btn" id="globalBack"><i class="fas fa-arrow-left"></i> Kembali</div>
+    </div>
+    <div class="nav-right">
+      <div class="nav-title">Warunk Dox Ducks</div>
+      <div class="nav-sub" style="text-align:right">Flash Sale • Penawaran Terbatas</div>
+    </div>
+  </div>
+
+  <main>
+    <h1><i class="fas fa-bolt"></i> Flash Sale</h1>
+
+    <!-- SECTION: STORE -->
+    <section id="section-store" class="active">
+      <div class="layout">
+        <div id="storeGrid" class="flash-grid"></div>
+      </div>
+    </section>
+
+    <!-- SECTION: FORM -->
+    <section id="section-form" aria-hidden="true">
+      <div class="card" style="max-width:840px;margin:0 auto">
+        <div style="display:flex;gap:1rem;align-items:flex-start;flex-wrap:wrap">
+          <div style="flex:1;min-width:240px">
+            <img id="formImage" src="" alt="product" style="width:100%;height:220px;object-fit:cover;border-radius:10px;">
+          </div>
+          <div style="flex:1.2;min-width:260px">
+            <div class="name" id="formProductName">Produk</div>
+            <div class="price" id="formProductPrice">Rp 0</div>
+            <div class="desc muted" id="formProductDesc">Deskripsi</div>
+
+            <form id="checkoutForm">
+              <div class="field"><label class="small">Nama Pembeli</label><input id="buyerName" type="text" required></div>
+              <div class="field"><label class="small">Nomor WA (contoh: 62812xxxx)</label><input id="buyerWA" type="tel" required></div>
+              <div class="field"><label class="small">Username Telegram (opsional)</label><input id="buyerTG" type="text" placeholder="@username (opsional)"></div>
+
+              <div class="field">
+                <label class="small">Metode Pembayaran</label>
+                <select id="paymentMethod">
+                  <option value="dana">Dana</option>
+                  <option value="qris">QRIS</option>
+                </select>
+              </div>
+
+              <div style="display:flex;gap:.6rem;margin-top:.6rem;">
+                <button class="btn" type="submit"><i class="fas fa-credit-card"></i> Bayar</button>
+                <button type="button" class="btn secondary" id="cancelToStore">Batal</button>
+              </div>
+            </form>
+            <p class="muted" style="margin-top:.6rem">Pastikan data benar. Setelah klik <strong>Bayar</strong> Anda akan diarahkan ke halaman konfirmasi pembayaran.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION: PAYMENT (show qris/dana and upload) -->
+    <section id="section-payment" aria-hidden="true">
+      <div class="card" style="max-width:760px;margin:0 auto;">
+        <div style="display:flex;gap:1rem;flex-wrap:wrap;">
+          <div style="flex:1;min-width:240px">
+            <div class="name">Konfirmasi Pembayaran</div>
+            <div class="muted" id="payDate"></div>
+
+            <div class="payment-box" id="payDetails"></div>
+
+            <div id="paymentBox" style="margin-top:.6rem;"></div>
+
+          </div>
+          <div style="flex:1;min-width:220px">
+            <div class="name" style="font-size:1rem">Upload Bukti Pembayaran</div>
+            <div class="muted">Upload foto bukti transfer atau screenshot QRIS</div>
+            <div style="margin-top:.6rem">
+              <input type="file" id="proofFile" accept="image/*">
+              <div id="proofPreview" style="margin-top:.6rem"></div>
+            </div>
+
+            <div style="display:flex;gap:.6rem;margin-top:.8rem;">
+              <button id="confirmPaid" class="btn"><i class="fas fa-paper-plane"></i> Sudah di Bayar</button>
+              <button id="backToForm" class="btn secondary">Kembali</button>
+            </div>
+
+            <p class="muted" style="margin-top:.6rem">Note: Transfer sesuai metode. Jika sudah bayar, upload bukti lalu tekan "Sudah di Bayar".</p>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION: INVOICE -->
+    <section id="section-invoice" aria-hidden="true">
+      <div class="card invoice" style="max-width:760px;margin:0 auto">
+        <div style="display:flex;justify-content:space-between;gap:1rem;flex-wrap:wrap;">
+          <div>
+            <div class="big">STRUK PEMBELIAN</div>
+            <div class="muted" style="margin-top:.4rem">Terimakasih sudah berbelanja di Warunk Dox Ducks</div>
+          </div>
+          <div style="text-align:right">
+            <div class="muted">Tanggal</div>
+            <div id="invDate" style="font-weight:700"></div>
+          </div>
+        </div>
+
+        <div style="border-top:1px dashed rgba(255,255,255,0.04); margin-top:.8rem; padding-top:.8rem;">
+          <strong>Nama:</strong> <span id="invName"></span><br>
+          <strong>ID Transaksi:</strong> <span id="invId"></span><br>
+          <strong>Barang:</strong> <span id="invProduct"></span><br>
+          <strong>Harga:</strong> Rp <span id="invPrice"></span><br>
+          <strong>Metode:</strong> <span id="invMethod"></span><br>
+          <strong>No Rek / QRIS:</strong> <span id="invAccount"></span><br>
+          <strong>Atas Nama:</strong> <span id="invAccountName"></span><br>
+        </div>
+
+        <div style="display:flex;gap:.6rem;margin-top:.8rem;flex-wrap:wrap;">
+          <a id="waButton" class="btn" target="_blank" rel="noopener noreferrer"><i class="fab fa-whatsapp"></i> WhatsApp</a>
+          <a id="tgButton" class="btn" target="_blank" rel="noopener noreferrer"><i class="fab fa-telegram"></i> Telegram</a>
+          <button id="doneToHome" class="btn secondary">Kembali ke Halaman Utama</button>
+        </div>
+
+        <p style="margin-top:.8rem;font-weight:600">Terimakasih atas pembelian di toko kami dan membeli produk flash sale kami dengan harga murah, jika anda kendala bisa hubungin kami lewat WhatsApp atau telegram, jangan lupa next ordernya kakak 😊</p>
+      </div>
+    </section>
+
+    <footer style="max-width:1100px;margin:1rem auto;text-align:center;color:var(--muted)">Warunk Dox Ducks • Flash Sale</footer>
+  </main>
+
+<script>
+/* ================== CONFIG — GANTI DI SINI ==================
+  Masukkan BOT_TOKEN & CHAT_ID agar pengiriman ke Telegram bekerja.
+  Jika tidak ingin membagikan token di sini, biarkan placeholder
+  dan sistem akan tetap bekerja (tanpa mengirim ke telegram).
+*/
+const BOT_TOKEN = "PUT_YOUR_BOT_TOKEN_HERE"; // contoh: 123456789:AA...
+const CHAT_ID = "PUT_YOUR_CHAT_ID_HERE";     // contoh: -987654321 atau 123456789
+
+// Nomor Dana & Atas Nama (untuk tampilan)
+const SELLER_DANA_NUMBER = "081234567890";
+const SELLER_DANA_NAME = "Nama Pemilik";
+
+// QRIS IMAGE: kalau punya dataURI base64 PNG, bisa tempel di sini.
+// Default: simple SVG placeholder (akan tampil).
+const QRIS_IMAGE_DATAURL = "data:image/svg+xml;utf8," + encodeURIComponent(
+  `<svg xmlns='http://www.w3.org/2000/svg' width='400' height='400'>
+     <rect width='100%' height='100%' fill='#fff'/>
+     <text x='50%' y='50%' dominant-baseline='middle' text-anchor='middle' font-size='18' fill='#000'>
+       QRIS PLACEHOLDER
+     </text>
+   </svg>`
+);
+
+// Kontak seller untuk tombol WA / TG (ubah sesuai akun)
+// WA: tanpa tanda +, contoh 62812...
+const SELLER_WHATSAPP = "6281234567890";
+const SELLER_TELEGRAM = "t.me/yourtelegram";
+
+/* ================== PRODUCTS DATA (embedded JSON) ==================
+   - status: 'flash' | 'coming' | 'expired'
+   - startTime / endTime ISO 8601 (jika diperlukan)
+*/
+const PRODUCTS = [
+  {
+    id: 1,
+    name: "Paket Hemat 1 Hari",
+    price: 15000,
+    description: "Promo spesial terbatas untuk pelanggan baru.",
+    startTime: "2025-10-15T00:00:00",
+    endTime: "2025-10-20T23:59:59",
+    image: "https://i.imgur.com/dR8N1eT.jpeg",
+    status: "flash"
+  },
+  {
+    id: 2,
+    name: "Kaos Warunk DD Limited",
+    price: 90000,
+    description: "Kaos edisi spesial Warunk Dox Ducks.",
+    startTime: "2025-10-25T00:00:00",
+    endTime: "2025-10-30T23:59:59",
+    image: "https://i.imgur.com/cic3JfO.jpeg",
+    status: "coming"
+  },
+  {
+    id: 3,
+    name: "Paket Bundling Murah",
+    price: 25000,
+    description: "Flash sale sudah berakhir.",
+    startTime: "2025-10-01T00:00:00",
+    endTime: "2025-10-05T23:59:59",
+    image: "https://i.imgur.com/Z01xDmQ.jpeg",
+    status: "expired"
+  }
+];
+
+/* ================== SPA STATE ================== */
+let state = {
+  current: 'store',
+  selectedProduct: null,
+  transaction: null,
+  proofFile: null
+};
+
+/* ======== Helpers ======== */
+function el(id){ return document.getElementById(id); }
+function formatCurrency(n){ return Number(n).toLocaleString('id-ID'); }
+function pad(n){ return String(n).padStart(2,'0'); }
+function formatDuration(ms){
+  if(ms <= 0) return '00 hari 00 jam 00 menit 00 detik';
+  const total = Math.floor(ms/1000);
+  const d = Math.floor(total/(3600*24));
+  const h = Math.floor((total % (3600*24))/3600);
+  const m = Math.floor((total%3600)/60);
+  const s = total%60;
+  return `${pad(d)} hari ${pad(h)} jam ${pad(m)} menit ${pad(s)} detik`;
+}
+function formatF1(iso){
+  if(!iso) return '-';
+  const d = new Date(iso);
+  return d.toLocaleDateString('id-ID',{ day:'2-digit', month:'long', year:'numeric' });
+}
+function genId(){
+  const now = Date.now().toString(36);
+  const rnd = Math.random().toString(36).slice(2,8);
+  return (now + rnd).toUpperCase();
+}
+
+/* ======== RENDER STORE ======== */
+let timerInterval = null;
+function renderStore(){
+  const grid = el('storeGrid');
+  grid.innerHTML = '';
+  const now = new Date();
+
+  PRODUCTS.forEach(p=>{
+    if(p.status === 'expired') return;
+    // If flash but endTime passed -> skip
+    if(p.status === 'flash' && p.endTime && new Date(p.endTime) < now) return;
+    // If status flash but startTime in future -> treat as coming
+    let isComing = false;
+    if(p.startTime && new Date(p.startTime) > now) isComing = true;
+    if(p.status === 'coming' && p.startTime && new Date(p.startTime) <= now){
+      // start now -> if endTime still valid, set to flash
+      if(p.endTime && new Date(p.endTime) > now) p.status = 'flash';
+      else p.status = 'expired';
+    }
+    if(p.status === 'flash' && isComing) isComing = true;
+
+    const card = document.createElement('div');
+    card.className = 'card' + (isComing ? ' coming' : '');
+    let html = '';
+    html += `<img src="${p.image}" alt="${p.name}">`;
+    html += `<div class="name">${p.name}</div>`;
+    html += `<div class="price">Rp ${formatCurrency(p.price)}</div>`;
+    html += `<div class="desc">${p.description}</div>`;
+
+    if(isComing){
+      html += `<div class="timer">COMING SOON<br><span class="muted">Mulai ${formatF1(p.startTime)} — 00:00 WIB</span></div>`;
+      html += `<div class="flex"><button class="btn" disabled>Coming Soon</button></div>`;
+    } else if(p.status === 'flash'){
+      html += `<div class="timer" id="timer-${p.id}">Menghitung mundur...</div>`;
+      html += `<div class="flex"><button class="btn" onclick="onBuy(${p.id})"><i class="fas fa-bolt"></i> Beli Sekarang</button></div>`;
+    }
+    card.innerHTML = html;
+    grid.appendChild(card);
+  });
+
+  // start timers
+  if(timerInterval) clearInterval(timerInterval);
+  timerInterval = setInterval(()=> {
+    const now = new Date();
+    let needRerender = false;
+    PRODUCTS.forEach(p=>{
+      if(p.status !== 'flash') return;
+      if(!p.endTime) return;
+      const elTimer = document.getElementById(`timer-${p.id}`);
+      const end = new Date(p.endTime);
+      const diff = end - now;
+      if(diff <= 0){ needRerender = true; return; }
+      if(elTimer) elTimer.textContent = formatDuration(diff);
+    });
+    if(needRerender) renderStore();
+  },1000);
+}
+
+/* ======== BUY FLOW ======== */
+function onBuy(id){
+  const p = PRODUCTS.find(x=>x.id === id);
+  if(!p) return alert('Produk tidak ditemukan');
+  state.selectedProduct = p;
+  // fill form
+  el('formImage').src = p.image;
+  el('formProductName').textContent = p.name;
+  el('formProductPrice').textContent = 'Rp ' + formatCurrency(p.price);
+  el('formProductDesc').textContent = p.description;
+  // reset form
+  el('buyerName').value = '';
+  el('buyerWA').value = '';
+  el('buyerTG').value = '';
+  el('paymentMethod').value = 'dana';
+  showSection('form');
+}
+
+/* ======== SHOW/HIDE SECTIONS ======== */
+function showSection(name){
+  ['store','form','payment','invoice'].forEach(s=>{
+    const node = document.getElementById('section-' + s);
+    if(!node) return;
+    if(s === name) node.classList.add('active'); else node.classList.remove('active');
+  });
+  state.current = name;
+  // back behaviour
+  el('globalBack').onclick = ()=>{
+    if(name === 'store') { window.location.href = 'index.html'; }
+    else if(name === 'form') { showSection('store'); }
+    else if(name === 'payment') { showSection('form'); }
+    else if(name === 'invoice') { showSection('store'); }
+  };
+}
+
+/* ======== FORM SUBMIT -> BUILD TRANSACTION & SHOW PAYMENT ======== */
+el('checkoutForm').addEventListener('submit', function(e){
+  e.preventDefault();
+  const buyerName = el('buyerName').value.trim();
+  const buyerWA = el('buyerWA').value.trim();
+  const buyerTG = el('buyerTG').value.trim() || '-';
+  const method = el('paymentMethod').value;
+
+  if(!buyerName || !buyerWA) { alert('Isi Nama dan Nomor WA terlebih dahulu'); return; }
+
+  const tx = {
+    id: genId(),
+    date: new Date().toLocaleString('id-ID'),
+    product: state.selectedProduct.name,
+    price: state.selectedProduct.price,
+    buyerName, buyerWA, buyerTG, method
+  };
+  state.transaction = tx;
+  renderPayment();
+  showSection('payment');
+});
+
+/* ======== RENDER PAYMENT PAGE ======== */
+function renderPayment(){
+  const tx = state.transaction;
+  el('payDate').textContent = 'Tanggal: ' + tx.date;
+  el('payDetails').innerHTML = `
+    <strong>Nama:</strong> ${tx.buyerName} <br>
+    <strong>Produk:</strong> ${tx.product} <br>
+    <strong>Harga:</strong> Rp ${formatCurrency(tx.price)} <br>
+    <strong>Metode:</strong> ${tx.method.toUpperCase()}
+  `;
+
+  const box = el('paymentBox');
+  box.innerHTML = '';
+  if(tx.method === 'dana'){
+    box.innerHTML = `
+      <div class="payment-box">
+        <div class="muted">Transfer ke:</div>
+        <div style="margin-top:.5rem;font-weight:800">${SELLER_DANA_NUMBER}</div>
+        <div class="muted">Atas nama: ${SELLER_DANA_NAME}</div>
+      </div>
+    `;
+  } else {
+    box.innerHTML = `
+      <div class="payment-box center">
+        <div class="muted">Scan QRIS berikut</div>
+        <img src="${QRIS_IMAGE_DATAURL}" alt="QRIS" class="qrimg">
+        <div class="muted" style="margin-top:.4rem">Jika bermasalah, pilih Dana</div>
+      </div>
+    `;
+  }
+  // reset proof
+  el('proofPreview').innerHTML = '';
+  el('proofFile').value = '';
+  state.proofFile = null;
+}
+
+/* ======== PROOF PREVIEW ======== */
+el('proofFile').addEventListener('change', function(e){
+  const f = this.files[0];
+  if(!f) { state.proofFile = null; el('proofPreview').innerHTML = ''; return; }
+  state.proofFile = f;
+  const reader = new FileReader();
+  reader.onload = function(ev){
+    el('proofPreview').innerHTML = `<img src="${ev.target.result}" style="max-width:220px;border-radius:8px;display:block;">`;
+  };
+  reader.readAsDataURL(f);
+});
+
+/* ======== SEND TO TELEGRAM (sendPhoto with caption) ========
+   NOTE: Direct browser -> Telegram API may be blocked by CORS on some browsers.
+   If CORS blocks, the code catches the error and proceeds to invoice (fallback).
+   For production, recommended to send via your own server (server acts as proxy).
+*/
+async function sendToTelegram(fileBlob, captionText){
+  if(!BOT_TOKEN || !CHAT_ID || BOT_TOKEN.includes('PUT_YOUR') || CHAT_ID.includes('PUT_YOUR')){
+    console.warn('BOT_TOKEN / CHAT_ID not configured — skipping Telegram send.');
+    return { ok:false, reason: 'no-config' };
+  }
+
+  const url = `https://api.telegram.org/bot${BOT_TOKEN}/sendPhoto`;
+  const form = new FormData();
+  form.append('chat_id', CHAT_ID);
+  form.append('caption', captionText);
+  form.append('parse_mode', 'HTML');
+  // fileBlob should be a Blob or File
+  form.append('photo', fileBlob, 'bukti.jpg');
+
+  try{
+    const res = await fetch(url, { method:'POST', body: form });
+    const j = await res.json();
+    return j;
+  }catch(err){
+    console.error('Telegram send error', err);
+    return { ok:false, reason: err.message || 'fetch-failed' };
+  }
+}
+
+/* ======== CONFIRM PAID -> SEND & SHOW INVOICE ======== */
+el('confirmPaid').addEventListener('click', async function(){
+  const tx = state.transaction;
+  if(!tx) return alert('Transaksi tidak ditemukan.');
+
+  // If user didn't upload proof, confirm continue
+  if(!state.proofFile){
+    if(!confirm('Anda belum upload bukti pembayaran. Lanjutkan tanpa bukti?')) return;
+  }
+
+  // prepare caption
+  const caption = `<b>Pembayaran Baru</b>\nNama: ${tx.buyerName}\nID: ${tx.id}\nProduk: ${tx.product}\nHarga: Rp ${formatCurrency(tx.price)}\nMetode: ${tx.method.toUpperCase()}\nWA: ${tx.buyerWA}\nTG: ${tx.buyerTG}`;
+
+  // convert proofFile to blob (if exists), else send small placeholder image (SVG)
+  let blobToSend = null;
+  if(state.proofFile){
+    // ensure file blob
+    blobToSend = state.proofFile;
+  } else {
+    const svg = `<svg xmlns='http://www.w3.org/2000/svg' width='400' height='200'><rect width='100%' height='100%' fill='#fff'/><text x='50%' y='50%' dominant-baseline='middle' text-anchor='middle' font-size='14' fill='#000'>No proof provided</text></svg>`;
+    blobToSend = new Blob([svg], { type: 'image/svg+xml' });
+  }
+
+  // show temporary loader on button
+  const btn = el('confirmPaid');
+  const oldText = btn.innerHTML;
+  btn.disabled = true;
+  btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Mengirim...';
+
+  const result = await sendToTelegram(blobToSend, caption);
+
+  // restore button
+  btn.disabled = false;
+  btn.innerHTML = oldText;
+
+  if(result && result.ok){
+    // success
+    console.log('Telegram sent', result);
+    tx.telegramMessageId = result.result.message_id;
+    tx.telegramResult = result;
+    // continue to invoice
+    populateInvoiceAndShow(true);
+  } else {
+    // failed or skipped (no-config or CORS)
+    console.warn('Telegram send failed/skipped', result);
+    // show user a gentle message, then continue to invoice
+    if(result && result.reason === 'no-config'){
+      alert('BOT_TOKEN / CHAT_ID belum dikonfigurasi — bukti tidak dikirim ke Telegram. Lanjut ke struk.');
+    } else {
+      alert('Gagal mengirim bukti ke Telegram (mungkin diblokir CORS). Sistem akan tetap menampilkan struk. Untuk mengaktifkan pengiriman otomatis tanpa masalah, jalankan pengiriman melalui server (instruksi ada di komentar).');
+    }
+    populateInvoiceAndShow(false);
+  }
+});
+
+/* ======== POPULATE INVOICE ======== */
+function populateInvoiceAndShow(sentToTelegram){
+  const tx = state.transaction;
+  el('invName').textContent = tx.buyerName;
+  el('invId').textContent = tx.id;
+  el('invProduct').textContent = tx.product;
+  el('invPrice').textContent = formatCurrency(tx.price);
+  el('invMethod').textContent = tx.method.toUpperCase();
+  if(tx.method === 'dana'){
+    el('invAccount').textContent = SELLER_DANA_NUMBER;
+    el('invAccountName').textContent = SELLER_DANA_NAME;
+  } else {
+    el('invAccount').textContent = '[QRIS]';
+    el('invAccountName').textContent = SELLER_DANA_NAME;
+  }
+  el('invDate').textContent = tx.date;
+
+  // setup contact buttons
+  el('waButton').href = `https://wa.me/${SELLER_WHATSAPP}?text=${encodeURIComponent('Halo, saya ingin konfirmasi pesanan. ID: ' + tx.id)}`;
+  el('tgButton').href = `https://${SELLER_TELEGRAM}`;
+
+  showSection('invoice');
+}
+
+/* ======== BACK / CANCEL BUTTONS ======== */
+el('cancelToStore').addEventListener('click', ()=> showSection('store'));
+el('backToForm').addEventListener('click', ()=> showSection('form'));
+el('doneToHome').addEventListener('click', ()=>{
+  // reset state
+  state.selectedProduct = null;
+  state.transaction = null;
+  state.proofFile = null;
+  showSection('store');
+});
+
+/* ======== INIT ======== */
+function init(){
+  renderStore();
+  el('globalBack').onclick = ()=> { window.location.href = 'index.html'; };
+}
+init();
+
+/* ========== NOTES & HELPFUL INFO =============
+1) Untuk mengaktifkan pengiriman ke Telegram dari browser:
+   - Ganti BOT_TOKEN dan CHAT_ID di bagian CONFIG di atas.
+   - KETERANGAN: Beberapa browser memblokir permintaan langsung ke Telegram API karena CORS.
+     Jika fetch ke api.telegram.org gagal (CORS), solusi terbaik:
+       a) Buat endpoint server kecil (Node/PHP/Python) yang menerima upload dari client dan
+          meneruskan (server->telegram) menggunakan BOT_TOKEN (server tidak terkena CORS).
+       b) Atau gunakan serverless function (Cloudflare worker / Vercel serverless).
+   - Jika kamu ingin, aku bisa kirimkan contoh server proxy kecil (Node.js/Express) untuk relay.
+
+2) Untuk mengganti QRIS dengan file PNG:
+   - Ganti QRIS_IMAGE_DATAURL dengan dataURI base64 PNG:
+     contoh: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAA..."
+   - Atau ganti konstanta dengan URL gambar publik.
+
+3) Keamanan:
+   - BOT_TOKEN sebaiknya TIDAK dimasukkan ke file publik di client bila kamu peduli soal keamanan.
+     Untuk produksi, gunakan server untuk menyimpan token.
+
+4) Jika butuh style tambahan (glassmorphism, animasi, badge), bilang saja — aku perhalus lagi.
+================================================ */
+
+</script>
+</body>
+</html>
