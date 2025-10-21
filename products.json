@@ -1,12 +1,5 @@
 [
   {
-    "id": 2,
-    "name": "Paket Premium B",
-    "price": 50000,
-    "description": "Paket premium dengan kualitas terbaik",
-    "category": "Paket"
-  },
-  {
     "id": 3,
     "name": "Paket Exclusive C",
     "price": 75000,
