@@ -5,5 +5,12 @@
     "price": 40000,
     "description": "Akses member 30 Days .Membuka Akses Bug. Sender Ditanggung Oleh Staff",
     "category": "APK"
+  },
+  {
+    "id": 2,
+    "name": "VPS DIGITAL OCEAN R8C4",
+    "price": 35000,
+    "description": "BENEFIT BANYAK FREE PASANG ANTI PROTECK.INSTALLPANEL DAN TEMA.FREE INSTALL NODE DLL MASIH BANYAK LAGI",
+    "category": "VPS"
   }
 ]
