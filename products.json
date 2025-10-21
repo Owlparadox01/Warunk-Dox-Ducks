@@ -1,12 +1,5 @@
 [
   {
-    "id": 6,
-    "name": "Produk Limited F",
-    "price": 200000,
-    "description": "Produk limited edition yang langka",
-    "category": "Produk"
-  },
-  {
     "id": 7,
     "name": "Digital Product G",
     "price": 30000,
