@@ -1,12 +1,5 @@
 [
   {
-    "id": 3,
-    "name": "Paket Exclusive C",
-    "price": 75000,
-    "description": "Paket exclusive dengan bonus spesial",
-    "category": "Paket"
-  },
-  {
     "id": 4,
     "name": "Paket Ultimate D",
     "price": 100000,
