@@ -1,12 +1,5 @@
 [
   {
-    "id": 5,
-    "name": "Produk Spesial E",
-    "price": 150000,
-    "description": "Produk spesial dengan kualitas premium",
-    "category": "Produk"
-  },
-  {
     "id": 6,
     "name": "Produk Limited F",
     "price": 200000,
