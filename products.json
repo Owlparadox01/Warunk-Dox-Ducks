@@ -1,12 +1,5 @@
 [
   {
-    "id": 4,
-    "name": "Paket Ultimate D",
-    "price": 100000,
-    "description": "Paket ultimate dengan layanan prioritas",
-    "category": "Paket"
-  },
-  {
     "id": 5,
     "name": "Produk Spesial E",
     "price": 150000,
