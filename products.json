@@ -1,12 +1,5 @@
 [
   {
-    "id": 1,
-    "name": "Paket Hemat A",
-    "price": 25000,
-    "description": "Paket hemat spesial untuk pelanggan setia",
-    "category": "Paket"
-  },
-  {
     "id": 2,
     "name": "Paket Premium B",
     "price": 50000,
